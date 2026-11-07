@@ -1,0 +1,17 @@
+# Operating System files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# VS Code workspace files
+.vscode/
+
+# Node modules & build folders (if applicable)
+node_modules/
+
+# Arduino build output folders
+build/
+core/
+*.hex
+*.bin
+*.elf

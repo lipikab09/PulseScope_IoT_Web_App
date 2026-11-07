@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseScope | IoT Oscilloscope</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">⌁</div><div><b>PulseScope</b><small>IoT MONITOR</small></div></div>
+      <div class="side-label">WORKSPACE</div>
+      <a class="nav active" href="#overview">▦ <span>Dashboard</span></a>
+      <a class="nav" href="#waveform">∿ <span>Live waveform</span></a>
+      <a class="nav" href="#measurements">◫ <span>Measurements</span></a>
+      <div class="side-label device-label">DEVICE</div>
+      <div class="device-mini"><span class="dot" id="sideDot"></span><div><b id="sideDevice">ESP32-H2</b><small id="sideStatus">Not connected</small></div></div>
+      <div class="sidebar-bottom"><span class="pulse-dot"></span> SYSTEM READY <small>v1.0.0</small></div>
+    </aside>
+
+    <main class="main" id="overview">
+      <header class="topbar">
+        <div><div class="eyebrow">IOT / OSCILLOSCOPE</div><h1>Dashboard</h1><p>Monitor and analyze your ESP32-H2 signal data.</p></div>
+        <div class="top-actions"><div class="connection-pill" id="connectionPill"><span class="dot"></span><span id="connectionText">Disconnected</span></div><button class="btn primary" id="connectBtn">↔ Connect device</button></div>
+      </header>
+
+      <section class="metrics">
+        <article class="metric-card"><div class="metric-head">INPUT VOLTAGE <span>↗</span></div><div class="metric-value"><strong id="voltage">0.00</strong><em>V</em></div><div class="metric-foot">ADC-derived voltage</div></article>
+        <article class="metric-card"><div class="metric-head">RAW ADC <span>⌁</span></div><div class="metric-value"><strong id="adc">0</strong><em>/ 4095</em></div><div class="metric-foot">12-bit reading</div></article>
+        <article class="metric-card"><div class="metric-head">SIGNAL TYPE <span>∿</span></div><div class="metric-value"><strong class="text-value" id="signalLabel">SINE</strong></div><div class="metric-foot" id="signalModeFoot">Demo signal</div></article>
+        <article class="metric-card"><div class="metric-head">SAMPLE COUNT <span>◷</span></div><div class="metric-value"><strong id="sampleCount">0</strong></div><div class="metric-foot">Samples received</div></article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel chart-panel" id="waveform">
+          <div class="panel-heading"><div><div class="eyebrow">SIGNAL ANALYSIS</div><h2>Live waveform</h2></div><div class="live-tag"><span class="pulse-dot"></span><span id="chartMode">DEMO MODE</span></div></div>
+          <div class="chart-meta"><span>Voltage <b id="chartVoltage">0.00 V</b></span><span>Time base <b id="timeBaseLabel">1.0 s/div</b></span></div>
+          <div class="chart-wrap"><canvas id="waveChart"></canvas></div>
+          <div class="chart-controls"><button class="btn primary" id="runBtn">▶ Start</button><button class="btn secondary" id="clearBtn">Clear</button><label class="inline-control">Time base <select id="timeBase"><option value="1">1.0 s/div</option><option value="0.5">500 ms/div</option><option value="0.2">200 ms/div</option><option value="0.1">100 ms/div</option></select></label></div>
+          <div class="demo-note" id="demoNote">Simulation is active. Connect your ESP32-H2 to view real sensor readings.</div>
+        </article>
+
+        <article class="panel controls-panel">
+          <div class="panel-heading"><div><div class="eyebrow">CONFIGURATION</div><h2>Signal controls</h2></div><span class="gear">⚙</span></div>
+          <label class="field-label">Signal type</label>
+          <select id="signalType"><option value="sine">Sine wave</option><option value="square">Square wave</option><option value="triangle">Triangle wave</option><option value="dc">DC level</option></select>
+          <div class="control-row"><label class="field-label">Amplitude <b id="ampValue">1.0 V</b></label><input id="amplitude" type="range" min="0.1" max="1.6" step="0.1" value="1"></div>
+          <div class="control-row"><label class="field-label">Frequency <b id="freqValue">2 Hz</b></label><input id="frequency" type="range" min="1" max="10" step="1" value="2"></div>
+          <div class="control-row"><label class="field-label">DC offset <b id="offsetValue">1.65 V</b></label><input id="offset" type="range" min="0" max="3.3" step="0.05" value="1.65"></div>
+          <div class="control-hint">Controls configure the simulated waveform. Hardware settings require matching ESP32-H2 firmware.</div>
+        </article>
+      </section>
+
+      <section class="bottom-grid" id="measurements">
+        <article class="panel">
+          <div class="panel-heading"><div><div class="eyebrow">LIVE STATISTICS</div><h2>Measurements</h2></div></div>
+          <div class="measurement-grid">
+            <div class="measurement"><small>MINIMUM</small><b id="minValue">— V</b></div>
+            <div class="measurement"><small>MAXIMUM</small><b id="maxValue">— V</b></div>
+            <div class="measurement"><small>AVERAGE</small><b id="avgValue">— V</b></div>
+            <div class="measurement"><small>PEAK-TO-PEAK</small><b id="ppValue">— V</b></div>
+          </div>
+        </article>
+        <article class="panel device-panel">
+          <div class="panel-heading"><div><div class="eyebrow">HARDWARE</div><h2>Device information</h2></div><span class="chip">BLE</span></div>
+          <div class="device-info"><span>Device</span><b>ESP32-H2</b><span>Transport</span><b>Bluetooth Low Energy</b><span>ADC resolution</span><b>12-bit (0–4095)</b><span>Input range</span><b>0–3.3 V (board dependent)</b></div>
+          <p class="warning">Never connect a negative voltage or a signal above the ESP32-H2 ADC input limit directly to the board. Use suitable signal conditioning.</p>
+        </article>
+      </section>
+      <footer>PulseScope · ESP32-H2 Pocket Oscilloscope <span>Demo readings are simulated until BLE firmware is connected.</span></footer>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
